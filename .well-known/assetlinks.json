@@ -1,0 +1,12 @@
+[
+    {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.leo.app_leopatient_tbna",
+        "sha256_cert_fingerprints": [
+          "6C:EB:C8:D3:1F:35:32:F4:60:06:E5:B9:6C:7A:1E:5A:D9:8D:17:93:1D:0E:4C:9A:4F:58:D6:87:4D:98:E9:20"
+        ]
+      }
+    }
+  ]
