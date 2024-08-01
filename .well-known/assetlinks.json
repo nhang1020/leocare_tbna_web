@@ -1,12 +1,14 @@
 [
-    {
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.leo.app_leopatient_tbna",
-        "sha256_cert_fingerprints": [
-          "6C:EB:C8:D3:1F:35:32:F4:60:06:E5:B9:6C:7A:1E:5A:D9:8D:17:93:1D:0E:4C:9A:4F:58:D6:87:4D:98:E9:20"
-        ]
-      }
+    
+"relation": [
+    "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+    "namespace": "android_app",
+    "package_name": "com.leo.app_leopatient_tbna",
+    "sha256_cert_fingerprints": [
+    "43:81:43:D0:D8:E0:04:D6:AB:94:A9:2E:83:78:59:8B:8A:D1:40:22:0A:45:85:C0:45:65:B4:2F:7E:D7:EB:F8"
+    ]
     }
+}
   ]
