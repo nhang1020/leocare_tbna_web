@@ -1,412 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-	<title>Đăng nhập và xóa tài khoản</title>
-	<!-- <link rel="stylesheet" href="styles.css"> -->
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="app_leopatient_tbna">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>app_leopatient_tbna</title>
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = "869116680";
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
 </head>
-
 <body>
-	
-	<!-- <h2></h2> -->
-	<div class="container" id="container">
-		<div class="form-container sign-up-container">
-			<form id="deleteForm">
-				<h1 style="margin-bottom: 20px;">Xóa tài khoản</h1>
-				<div class="social-container">
-					<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-					<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-					<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-				</div>
-				<span style="color: red;" id="delete"></span>
-				<input type="text" id="deleteUsername" name="deleteUsername" placeholder="IDBN, tên đăng nhập" autocomplete="false" required>
-				<input type="password" id="deletePassword" name="deletePassword" placeholder="Mật khẩu" autocomplete="false" required>
-				<button style="margin-top: 20px;">Xác nhận</button>
-				<span style="margin-top: 20px;">⚠️ Cảnh báo! Nếu bạn xác nhận xóa tài khoản, thì thông tin tài khoản này
-					sẽ không thể sử dụng để truy cập vào ứng dụng LeoCare TBNA được nữa.</span>
-			</form>
-		</div>
-		<div class="form-container sign-in-container">
-			<form id="loginForm">
-				<h1 style="margin-bottom: 20px;">Đăng nhập</h1>
-				<span style="color: red;" id="login"></span>
-				<input type="text" id="loginUsername" name="username" autocomplete="false" placeholder="IDBN, tên đăng nhập" required>
-				<input type="password" id="loginPassword" name="loginPassword" autocomplete="false" placeholder="Mật khẩu" required>
-				<button style="margin-top: 20px;">Đăng nhập</button>
-			</form>
-		</div>
-		<div class="overlay-container">
-			<div class="overlay">
-				<div class="overlay-panel overlay-left">
-					<h1>Cảnh báo!</h1>
-					<p>Xác nhận xóa tài khoản</p>
-					<button class="ghost" id="logOut">Đăng xuất</button>
-				</div>
-				<div class="overlay-panel overlay-right">
-					<h1>Xác thực</h1>
-					<p>Bệnh viện Đa Khoa Khu Vực Tây Bắc Nghệ An</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="delete-success"
-		style="box-shadow: 2px 12px 20px silver; padding: 10px; border-radius: 10px; text-align: center; display: none;">
-		<h3 style="color: green;">Xóa tài khoản thành công</h3>
-		<span>Bạn đã xóa tài khoản thành công, để cấp lại tài khoản, vui lòng đến bộ phận tiếp nhận bệnh viện để được
-			cấp tài khoản.</span>
-	</div>
-	<footer>
-		<p>
-			Design by
-			<a target="_blank" href="https://leopardjsc.com/">Leopard Solutions</a>
-		</p>
-	</footer>
+  <script>
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
 </body>
-
-<script>
-	const signUpButton = document.getElementById('signUp');
-	const logOutButton = document.getElementById('logOut');
-	const container = document.getElementById('container');
-	let token = "";
-	document.getElementById('loginForm').addEventListener('submit', function (e) {
-		e.preventDefault();
-
-		const username = document.getElementById('loginUsername').value;
-		const password = document.getElementById('loginPassword').value;
-
-		fetch('http://113.160.173.137:9090/api/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				tendangnhap: username,
-				matkhau: password,
-			}),
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					alert('Login successful!');
-
-					document.getElementById('deleteUsername').value = '';
-					document.getElementById('deletePassword').value = '';
-					token = data.data.token;
-					container.classList.add("right-panel-active");
-
-				} else {
-					document.getElementById('login').innerHTML = `${data.message}`
-				}
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-	});
-
-	document.getElementById('deleteForm').addEventListener('submit', function (e) {
-		e.preventDefault();
-
-		const username = document.getElementById('deleteUsername').value;
-		const password = document.getElementById('deletePassword').value;
-
-		fetch('http://113.160.173.137:9090/api/req-delete-account', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${token}`
-			},
-			body: JSON.stringify({
-				tendangnhap: username,
-				matkhau: password,
-			}),
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					container.style.display = 'none';
-					document.getElementById('delete-success').style.display = 'block';
-				} else {
-					document.getElementById('delete').innerHTML = `${data.message}`;
-				}
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-	});
-	logOutButton.addEventListener('click', () => {
-		fetch('http://113.160.173.137:9090/api/logout', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${token}`
-			},
-			body: JSON.stringify({
-				token: token
-			}),
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					document.getElementById('loginUsername').value = '';
-					document.getElementById('loginPassword').value = '';
-					container.classList.remove("right-panel-active");
-				} else {
-					document.getElementById('delete').innerHTML = `${data.message}`
-				}
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
-
-	});
-</script>
-
 </html>
-
-
-
-<style>
-	@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-
-	* {
-		box-sizing: border-box;
-	}
-
-	body {
-		background: #f6f5f7;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-		font-family: 'Montserrat', sans-serif;
-		height: 100vh;
-		margin: -20px 0 50px;
-	}
-
-	h1 {
-		font-weight: bold;
-		margin: 0;
-	}
-
-	h2 {
-		text-align: center;
-	}
-
-	p {
-		font-size: 14px;
-		font-weight: 100;
-		line-height: 20px;
-		letter-spacing: 0.5px;
-		margin: 20px 0 30px;
-	}
-
-	span {
-		font-size: 12px;
-	}
-
-	a {
-		color: #333;
-		font-size: 14px;
-		text-decoration: none;
-		margin: 15px 0;
-	}
-
-	button {
-		border-radius: 20px;
-		border: 1px solid #402bff;
-		background-color: #402bff;
-		color: #FFFFFF;
-		font-size: 12px;
-		font-weight: bold;
-		padding: 12px 45px;
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		transition: transform 80ms ease-in;
-	}
-
-	button:active {
-		transform: scale(0.95);
-	}
-
-	button:focus {
-		outline: none;
-	}
-
-	button.ghost {
-		background-color: transparent;
-		border-color: #FFFFFF;
-	}
-
-	form {
-		background-color: #FFFFFF;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
-		padding: 0 50px;
-		height: 100%;
-		text-align: center;
-	}
-
-	input {
-		background-color: #eee;
-		border: none;
-		padding: 12px 15px;
-		margin: 8px 0;
-		width: 100%;
-		outline: none;
-	}
-
-	.container {
-		background-color: #fff;
-		border-radius: 10px;
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-			0 10px 10px rgba(0, 0, 0, 0.22);
-		position: relative;
-		overflow: hidden;
-		width: 768px;
-		max-width: 100%;
-		min-height: 480px;
-	}
-
-	.form-container {
-		position: absolute;
-		top: 0;
-		height: 100%;
-		transition: all 0.6s ease-in-out;
-	}
-
-	.sign-in-container {
-		left: 0;
-		width: 50%;
-		z-index: 2;
-	}
-
-	.container.right-panel-active .sign-in-container {
-		transform: translateX(100%);
-	}
-
-	.sign-up-container {
-		left: 0;
-		width: 50%;
-		opacity: 0;
-		z-index: 1;
-	}
-
-	.container.right-panel-active .sign-up-container {
-		transform: translateX(100%);
-		opacity: 1;
-		z-index: 5;
-		animation: show 0.6s;
-	}
-
-	@keyframes show {
-
-		0%,
-		49.99% {
-			opacity: 0;
-			z-index: 1;
-		}
-
-		50%,
-		100% {
-			opacity: 1;
-			z-index: 5;
-		}
-	}
-
-	.overlay-container {
-		position: absolute;
-		top: 0;
-		left: 50%;
-		width: 50%;
-		height: 100%;
-		overflow: hidden;
-		transition: transform 0.6s ease-in-out;
-		z-index: 100;
-	}
-
-	.container.right-panel-active .overlay-container {
-		transform: translateX(-100%);
-	}
-
-	.overlay {
-		background: #4141ff;
-		background: -webkit-linear-gradient(to right, #2b36ff, #6d41ff);
-		background: linear-gradient(to right, #2b36ff, #6d41ff);
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: 0 0;
-		color: #FFFFFF;
-		position: relative;
-		left: -100%;
-		height: 100%;
-		width: 200%;
-		transform: translateX(0);
-		transition: transform 0.6s ease-in-out;
-	}
-
-	.container.right-panel-active .overlay {
-		transform: translateX(50%);
-	}
-
-	.overlay-panel {
-		position: absolute;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
-		padding: 0 40px;
-		text-align: center;
-		top: 0;
-		height: 100%;
-		width: 50%;
-		transform: translateX(0);
-		transition: transform 0.6s ease-in-out;
-	}
-
-	.overlay-left {
-		transform: translateX(-20%);
-	}
-
-	.container.right-panel-active .overlay-left {
-		transform: translateX(0);
-	}
-
-	.overlay-right {
-		right: 0;
-		transform: translateX(0);
-	}
-
-	.container.right-panel-active .overlay-right {
-		transform: translateX(20%);
-	}
-
-	footer {
-		background-color: #222;
-		color: #fff;
-		font-size: 14px;
-		bottom: 0;
-		position: fixed;
-		left: 0;
-		right: 0;
-		text-align: center;
-		z-index: 999;
-	}
-
-	footer p {
-		margin: 10px 0;
-	}
-
-	footer i {
-		color: red;
-	}
-
-	footer a {
-		color: #3c97bf;
-		text-decoration: none;
-	}
-</style>
